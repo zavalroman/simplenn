@@ -13,6 +13,8 @@ public:
     double *biases;
     QList<QVector<double>> weights;
 
+    void showWeight();
+
 signals:
 };
 

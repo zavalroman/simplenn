@@ -12,6 +12,7 @@ public:
 
     double* feedForward(double*);
     void backpropagation(double*);
+    void showWeight();
 
 private:
     double learningRate;

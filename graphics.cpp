@@ -1,6 +1,6 @@
 #include "graphics.h"
 
-#include <QDebug>
+//#include <QDebug>
 #include <QRandomGenerator>
 #include <QtGlobal>
 
@@ -27,6 +27,7 @@ Graphics::~Graphics()
 void Graphics::repaint()
 {
     Learning();
+    //nn->showWeight();
     this->update();
 }
 
@@ -57,7 +58,7 @@ void Graphics::Learning()
 {
     if(points.size()>0) {
         for(int k=0; k<10000; k++) {
-            Point p = points[QRandomGenerator::global()->bounded(1)*points.size()];
+            Point p = points[QRandomGenerator::global()->generateDouble()*points.size()];
             double nx = (double) p.x / w - 0.5;
             double ny = (double) p.y / h - 0.5;
             nn->feedForward(new double[2]{nx, ny});
@@ -70,10 +71,12 @@ void Graphics::Learning()
     for(int i=0; i<w/8; i++) {
         for(int j=0; j<h/8; j++) {
             double nx = (double) i / w * 8 - 0.5;
-            double ny = (double) i / h * 8 - 0.5;
+            double ny = (double) j / h * 8 - 0.5;
             double *outputs = nn->feedForward(new double[2]{nx, ny});
             double green = qMax((double)0, qMin((double)1, outputs[0]-outputs[1]+0.5));
             double blue  = 1 - green;
+            //double green = outputs[0];
+            //double blue = outputs[1];
             green = 0.3 + green * 0.5;
             blue  = 0.5 + blue  * 0.5;
             uint color = (100 << 16) | ((int)(green*255) << 8) | (int)(blue*255);

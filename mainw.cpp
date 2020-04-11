@@ -21,7 +21,7 @@ MainW::MainW(QWidget *parent)
     connect(scene, &Scene::signalMousePressed,     graphics, &Graphics::slotMousePressed);
     connect(timer, &QTimer::timeout,               graphics, &Graphics::repaint         );
 
-    timer->start(300);
+    timer->start(50);
 }
 
 MainW::~MainW()

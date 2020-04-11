@@ -8,6 +8,8 @@
 #include <QTimer>
 #include <cmath>
 
+#include <QDebug>
+
 #include "neuralnetwork.h"
 #include "point.h"
 
@@ -36,7 +38,7 @@ private:
 
     QPointF pos;
 
-    double (*sigmoid )(double) = [](double x)->double { return 1 / (1 + log(-x)); };
+    double (*sigmoid )(double) = [](double x)->double { return 1 / (1 + exp(-x)); };
     double (*dsigmoid)(double) = [](double y)->double { return y * (1 - y); };
 
     QList<Point> points;
