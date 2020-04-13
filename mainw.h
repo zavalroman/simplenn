@@ -5,6 +5,7 @@
 
 #include "scene.h"
 #include "graphics.h"
+#include "neuralnetwork.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainW; }
@@ -27,5 +28,13 @@ private:
     QTimer *timer;
     Scene *scene;
     Graphics *graphics;
+
+    NeuralNetwork *nn;
+
+    double (*sigmoid )(double) = [](double x)->double { return 1 / (1 + exp(-x)); };
+    double (*dsigmoid)(double) = [](double y)->double { return y * (1 - y); };
+
+    void RunDots();
+    void RunDigits();
 };
 #endif // MAINW_H
