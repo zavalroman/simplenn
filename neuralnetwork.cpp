@@ -25,9 +25,13 @@ NeuralNetwork::NeuralNetwork(double learningRate, double (*activation)(double),
 
 double *NeuralNetwork::feedForward(double *inputs)
 {
+    //qDebug() << "feed forward" << layers.size();
     for(int i=0; i<layers[0].size; i++) {
+        //qDebug() << "ZERO";
         layers[0].neurons[i] = inputs[i];
+        //qDebug() << inputs[i];
     }
+    //qDebug() << "ONE";
     for(int i=1; i<layers.length(); i++) {
         Layer *l = &layers[i-1];
         Layer *l1 = &layers[i];
@@ -40,7 +44,8 @@ double *NeuralNetwork::feedForward(double *inputs)
             l1->neurons[j] = activation(l1->neurons[j]);
         }
     }
-    delete [] inputs;
+    //qDebug() << "TWO";
+    //delete [] inputs;
     return layers[layers.length()-1].neurons;
 }
 

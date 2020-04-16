@@ -5,6 +5,7 @@
 
 #include "scene.h"
 #include "graphics.h"
+#include "digits.h"
 #include "neuralnetwork.h"
 
 QT_BEGIN_NAMESPACE
@@ -19,6 +20,12 @@ public:
     MainW(QWidget *parent = nullptr);
     ~MainW();
 
+public slots:
+    void slotOutputs(double*);
+
+private slots:
+    void on_start_clicked();
+
 private:
     Ui::MainW *ui;
 
@@ -28,6 +35,7 @@ private:
     QTimer *timer;
     Scene *scene;
     Graphics *graphics;
+    Digits *digs;
 
     NeuralNetwork *nn;
 

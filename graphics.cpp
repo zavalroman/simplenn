@@ -72,7 +72,9 @@ void Graphics::Learning()
         for(int j=0; j<h/8; j++) {
             double nx = (double) i / w * 8 - 0.5;
             double ny = (double) j / h * 8 - 0.5;
-            double *outputs = nn->feedForward(new double[2]{nx, ny});
+            double *inputs = new double[2]{nx, ny};
+            double *outputs = nn->feedForward(inputs);
+            delete [] inputs;
             double green = qMax((double)0, qMin((double)1, outputs[0]-outputs[1]+0.5));
             double blue  = 1 - green;
             //double green = outputs[0];

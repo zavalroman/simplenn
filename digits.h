@@ -4,14 +4,8 @@
 #include <QObject>
 #include <QGraphicsItem>
 #include <QPainter>
-#include <QPointF>
-#include <QTimer>
-#include <cmath>
-
-#include <QDebug>
 
 #include "neuralnetwork.h"
-#include "point.h"
 
 class Digits : public QObject, public QGraphicsItem
 {
@@ -21,11 +15,13 @@ public:
     ~Digits();
 
 signals:
+    void signalOutputs(double*);
 
 public slots:
     void repaint();
     void slotMousePos(QPointF);
     void slotMousePressed(Qt::MouseButton);
+    void slotMouseReleased();
 
 private:
     QRectF boundingRect() const;
