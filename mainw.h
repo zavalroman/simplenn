@@ -8,6 +8,8 @@
 #include "digits.h"
 #include "neuralnetwork.h"
 
+#include <sys/time.h>
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainW; }
 QT_END_NAMESPACE
@@ -32,6 +34,8 @@ private:
     const int w = 1280;
     const int h = 720;
 
+    double *targets;
+
     QTimer *timer;
     Scene *scene;
     Graphics *graphics;
@@ -44,5 +48,8 @@ private:
 
     void RunDots();
     void RunDigits();
+
+    struct timeval start, end;
+    long  mSec, seconds, useconds;
 };
 #endif // MAINW_H

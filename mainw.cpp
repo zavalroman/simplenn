@@ -14,6 +14,10 @@ MainW::MainW(QWidget *parent)
     //RunDots();
     //RunDigits();
 
+    targets = new double[10]{};
+
+    gettimeofday(&start, NULL);
+    mSec = 0;
 }
 
 MainW::~MainW()
@@ -23,7 +27,6 @@ MainW::~MainW()
 
 void MainW::slotOutputs(double *outputs)
 {
-    //qDebug() << "outputs start";
     ui->bar_0->setValue(outputs[0]*100);
     ui->bar_1->setValue(outputs[1]*100);
     ui->bar_2->setValue(outputs[2]*100);
@@ -34,7 +37,6 @@ void MainW::slotOutputs(double *outputs)
     ui->bar_7->setValue(outputs[7]*100);
     ui->bar_8->setValue(outputs[8]*100);
     ui->bar_9->setValue(outputs[9]*100);
-    //qDebug() << "outputs stop";
 }
 
 void MainW::RunDots()
@@ -71,25 +73,27 @@ void MainW::RunDigits()
         images.back().load("train/"+f);
         digits << f.split(".")[0].right(1).toInt();
     }
-    qDebug() << "IMAGES LOADED";
+
     int samples = 60000;
-    QList<double*> inputs;
+    //QList<double*> inputs;
+    double **inputs = new double*[samples];
     for (int i = 0; i < samples; i++) {
-        inputs << new double[784];
+        //inputs << new double[784];
+        inputs[i] = new double[784];
         for (int x = 0;  x < 28; ++x) {
             for (int y = 0; y < 28; ++y) {
                 inputs[i][x + y * 28] = (images[i].pixel(x, y) & 0xff) / 255.0;
             }
         }
     }
-    qDebug() << "IMAGES PARSED";
-    for (int i = 0; i < 10; ++i) {
+
+    for (int i = 0; i < 1000; ++i) {
         int right = 0;
         double errorSum = 0;
+
         for (int j = 0; j < 100; ++j) {
             int imgIndex = QRandomGenerator::global()->generateDouble() * samples;
-            double *targets = new double[10];
-            //qDebug() << "one";
+
             targets[0] = 0.0;
             targets[1] = 0.0;
             targets[2] = 0.0;
@@ -100,15 +104,28 @@ void MainW::RunDigits()
             targets[7] = 0.0;
             targets[8] = 0.0;
             targets[9] = 0.0;
-            //qDebug() << "index" << imgIndex;
+
             int digit = digits[imgIndex];
-            //qDebug() << "2.1";
             targets[digit] = 1;
-            //qDebug() << "2.2" << inputs[imgIndex][300] << inputs[imgIndex][301] << inputs[imgIndex][302] << inputs[imgIndex][303] << inputs[imgIndex][304] << inputs[imgIndex][305] <<
-            //            inputs[imgIndex][306] << inputs[imgIndex][307] << inputs[imgIndex][308] << inputs[imgIndex][309] << inputs[imgIndex][310] << inputs[imgIndex][311];
+
+            //long sav_mSec = mSec;
+            //gettimeofday(&end, NULL);
+            //seconds = end.tv_sec - start.tv_sec;
+            //useconds = end.tv_usec - start.tv_usec;
+            //mSec = ((seconds) * 1000 + useconds / 1000.0 ) + 0.5;
+
+            //qDebug() << "begin" << mSec - sav_mSec;
+
             double *outputs = nn->feedForward(inputs[imgIndex]);
-            //qDebug() << "2.3";
-            //qDebug() << outputs[0] << outputs[1] << outputs[2] << outputs[3] << outputs[4] << outputs[5] << outputs[6] << outputs[7] << outputs[8] << outputs[9];
+
+            //sav_mSec = mSec;
+            //gettimeofday(&end, NULL);
+            //seconds = end.tv_sec - start.tv_sec;
+            //useconds = end.tv_usec - start.tv_usec;
+            //mSec = ((seconds) * 1000 + useconds / 1000.0 ) + 0.5;
+
+            //qDebug() << "feed" << mSec - sav_mSec;
+
             int maxDigit = 0;
             double maxDigitWeight = -1;
             for (int k = 0; k < 10; ++k) {
@@ -117,17 +134,31 @@ void MainW::RunDigits()
                     maxDigit = k;
                 }
             }
-            //qDebug() << "three";
             if(digit == maxDigit) right++;
             for (int k = 0; k < 10; ++k) {
                 errorSum += (targets[k] - outputs[k]) * (targets[k] - outputs[k]);
             }
+
             nn->backpropagation(targets);
-            //qDebug() << "five";
+
+            //sav_mSec = mSec;
+            //gettimeofday(&end, NULL);
+            //seconds = end.tv_sec - start.tv_sec;
+            //useconds = end.tv_usec - start.tv_usec;
+            //mSec = ((seconds) * 1000 + useconds / 1000.0 ) + 0.5;
+
+            //qDebug() << "back" << mSec - sav_mSec;
         }
-        qDebug() << right << errorSum;
+        long sav_mSec = mSec;
+        gettimeofday(&end, NULL);
+        seconds = end.tv_sec - start.tv_sec;
+        useconds = end.tv_usec - start.tv_usec;
+        mSec = ((seconds) * 1000 + useconds / 1000.0 ) + 0.5;
+
+        //qDebug() << "back" << mSec - sav_mSec;
+
+        qDebug() << right << errorSum << mSec - sav_mSec;
     }
-    qDebug() << "LEARNED";
 
     timer = new QTimer;
     scene = new Scene;
@@ -143,8 +174,7 @@ void MainW::RunDigits()
     connect(digs,  &Digits::signalOutputs,         this, &MainW::slotOutputs        );
     connect(timer, &QTimer::timeout,               digs, &Digits::repaint           );
 
-    timer->start(50);
-
+    timer->start(10);
 }
 
 

@@ -62,10 +62,11 @@ void Graphics::Learning()
             double nx = (double) p.x / w - 0.5;
             double ny = (double) p.y / h - 0.5;
             nn->feedForward(new double[2]{nx, ny});
-            double *targets = new double[2]{0, 0};
+            double *targets = new double[2]{0, 0}; // make global
             if(p.type==Qt::LeftButton) targets[0] = 1;
             else targets[1] = 1;
             nn->backpropagation(targets);
+            delete [] targets; // make global
         }
     }
     for(int i=0; i<w/8; i++) {

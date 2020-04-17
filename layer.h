@@ -9,11 +9,11 @@ public:
     Layer(int size = 1, int nextSize = 1);
 
     int size;
+    int weightSize;
     double *neurons;
     double *biases;
-    QList<QVector<double>> weights;
-
-    void showWeight();
+    //QList<QVector<double>> weights;
+    double **weights;
 
 signals:
 };
