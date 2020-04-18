@@ -4,7 +4,7 @@
 #include <QMainWindow>
 
 #include "scene.h"
-#include "graphics.h"
+#include "dots.h"
 #include "digits.h"
 #include "neuralnetwork.h"
 
@@ -26,7 +26,9 @@ public slots:
     void slotOutputs(double*);
 
 private slots:
-    void on_start_clicked();
+    void on_runDigits_clicked();
+
+    void on_runDots_clicked();
 
 private:
     Ui::MainW *ui;
@@ -38,7 +40,7 @@ private:
 
     QTimer *timer;
     Scene *scene;
-    Graphics *graphics;
+    Dots *graphics;
     Digits *digs;
 
     NeuralNetwork *nn;

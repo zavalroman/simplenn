@@ -1,10 +1,9 @@
-#include "graphics.h"
+#include "dots.h"
 
-//#include <QDebug>
 #include <QRandomGenerator>
 #include <QtGlobal>
 
-Graphics::Graphics(QObject *parent, int w, int h) :
+Dots::Dots(QObject *parent, int w, int h) :
     QObject(parent), QGraphicsItem()
 {
     this->w = w;
@@ -19,24 +18,23 @@ Graphics::Graphics(QObject *parent, int w, int h) :
     pimg = new QImage(w/8, h/8, QImage::Format_RGB32);
 }
 
-Graphics::~Graphics()
+Dots::~Dots()
 {
-    //
+
 }
 
-void Graphics::repaint()
+void Dots::repaint()
 {
     Learning();
-    //nn->showWeight();
     this->update();
 }
 
-QRectF Graphics::boundingRect() const
+QRectF Dots::boundingRect() const
 {
     return QRectF(0, 0, 1280, 720);
 }
 
-void Graphics::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void Dots::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     painter->drawImage(QRect(0, 0, w, h), *pimg);
 
@@ -54,7 +52,7 @@ void Graphics::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, 
     Q_UNUSED(widget);
 }
 
-void Graphics::Learning()
+void Dots::Learning()
 {
     if(points.size()>0) {
         for(int k=0; k<10000; k++) {
@@ -62,11 +60,11 @@ void Graphics::Learning()
             double nx = (double) p.x / w - 0.5;
             double ny = (double) p.y / h - 0.5;
             nn->feedForward(new double[2]{nx, ny});
-            double *targets = new double[2]{0, 0}; // make global
+            double *targets = new double[2]{0, 0};
             if(p.type==Qt::LeftButton) targets[0] = 1;
             else targets[1] = 1;
             nn->backpropagation(targets);
-            delete [] targets; // make global
+            delete [] targets;
         }
     }
     for(int i=0; i<w/8; i++) {
@@ -88,14 +86,13 @@ void Graphics::Learning()
     }
 }
 
-void Graphics::slotMousePos(QPointF point)
+void Dots::slotMousePos(QPointF point)
 {
     pos = point;
 }
 
-void Graphics::slotMousePressed(Qt::MouseButton button)
+void Dots::slotMousePressed(Qt::MouseButton button)
 {
-    //points << Point(pos.x()-16, pos.y()-38, button);
     points << Point(pos.x(), pos.y(), button);
 }
 

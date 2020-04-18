@@ -41,19 +41,17 @@ void MainW::slotOutputs(double *outputs)
 
 void MainW::RunDots()
 {
-    this->setFixedSize(w, h);
-
     timer = new QTimer;
     scene = new Scene;
-    graphics = new Graphics;
+    graphics = new Dots;
     scene->addItem(graphics);
     ui->graphicsView->setScene(scene);
     ui->graphicsView->setRenderHint(QPainter::Antialiasing);
     ui->graphicsView->setMouseTracking(true);
 
-    connect(scene, &Scene::signalTargetCoordinate, graphics, &Graphics::slotMousePos    );
-    connect(scene, &Scene::signalMousePressed,     graphics, &Graphics::slotMousePressed);
-    connect(timer, &QTimer::timeout,               graphics, &Graphics::repaint         );
+    connect(scene, &Scene::signalTargetCoordinate, graphics, &Dots::slotMousePos    );
+    connect(scene, &Scene::signalMousePressed,     graphics, &Dots::slotMousePressed);
+    connect(timer, &QTimer::timeout,               graphics, &Dots::repaint         );
 
     timer->start(50);
 }
@@ -75,10 +73,8 @@ void MainW::RunDigits()
     }
 
     int samples = 60000;
-    //QList<double*> inputs;
     double **inputs = new double*[samples];
     for (int i = 0; i < samples; i++) {
-        //inputs << new double[784];
         inputs[i] = new double[784];
         for (int x = 0;  x < 28; ++x) {
             for (int y = 0; y < 28; ++y) {
@@ -108,23 +104,7 @@ void MainW::RunDigits()
             int digit = digits[imgIndex];
             targets[digit] = 1;
 
-            //long sav_mSec = mSec;
-            //gettimeofday(&end, NULL);
-            //seconds = end.tv_sec - start.tv_sec;
-            //useconds = end.tv_usec - start.tv_usec;
-            //mSec = ((seconds) * 1000 + useconds / 1000.0 ) + 0.5;
-
-            //qDebug() << "begin" << mSec - sav_mSec;
-
             double *outputs = nn->feedForward(inputs[imgIndex]);
-
-            //sav_mSec = mSec;
-            //gettimeofday(&end, NULL);
-            //seconds = end.tv_sec - start.tv_sec;
-            //useconds = end.tv_usec - start.tv_usec;
-            //mSec = ((seconds) * 1000 + useconds / 1000.0 ) + 0.5;
-
-            //qDebug() << "feed" << mSec - sav_mSec;
 
             int maxDigit = 0;
             double maxDigitWeight = -1;
@@ -140,24 +120,21 @@ void MainW::RunDigits()
             }
 
             nn->backpropagation(targets);
-
-            //sav_mSec = mSec;
-            //gettimeofday(&end, NULL);
-            //seconds = end.tv_sec - start.tv_sec;
-            //useconds = end.tv_usec - start.tv_usec;
-            //mSec = ((seconds) * 1000 + useconds / 1000.0 ) + 0.5;
-
-            //qDebug() << "back" << mSec - sav_mSec;
         }
-        long sav_mSec = mSec;
-        gettimeofday(&end, NULL);
-        seconds = end.tv_sec - start.tv_sec;
-        useconds = end.tv_usec - start.tv_usec;
-        mSec = ((seconds) * 1000 + useconds / 1000.0 ) + 0.5;
+
+        //long sav_mSec = mSec;
+        //gettimeofday(&end, NULL);
+        //seconds = end.tv_sec - start.tv_sec;
+        //useconds = end.tv_usec - start.tv_usec;
+        //mSec = ((seconds) * 1000 + useconds / 1000.0 ) + 0.5;
 
         //qDebug() << "back" << mSec - sav_mSec;
 
-        qDebug() << right << errorSum << mSec - sav_mSec;
+        ui->digitsProgress->setValue(i);
+
+        ui->digitsLoss->setText(QString::number(right)+"    "+QString::number(errorSum));
+
+        qDebug() << right << errorSum;// << mSec - sav_mSec;
     }
 
     timer = new QTimer;
@@ -178,7 +155,12 @@ void MainW::RunDigits()
 }
 
 
-void MainW::on_start_clicked()
+void MainW::on_runDigits_clicked()
 {
     RunDigits();
+}
+
+void MainW::on_runDots_clicked()
+{
+    RunDots();
 }

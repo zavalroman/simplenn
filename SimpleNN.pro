@@ -19,7 +19,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     digits.cpp \
-    graphics.cpp \
+    dots.cpp \
     layer.cpp \
     main.cpp \
     mainw.cpp \
@@ -29,7 +29,7 @@ SOURCES += \
 
 HEADERS += \
     digits.h \
-    graphics.h \
+    dots.h \
     layer.h \
     mainw.h \
     neuralnetwork.h \

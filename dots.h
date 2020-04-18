@@ -1,5 +1,5 @@
-#ifndef GRAPHICS_H
-#define GRAPHICS_H
+#ifndef DOTS_H
+#define DOTS_H
 
 #include <QObject>
 #include <QGraphicsItem>
@@ -13,12 +13,12 @@
 #include "neuralnetwork.h"
 #include "point.h"
 
-class Graphics : public QObject, public QGraphicsItem
+class Dots : public QObject, public QGraphicsItem
 {
     Q_OBJECT
 public:
-    explicit Graphics(QObject *parent = nullptr, int width = 1280, int height = 720);
-    ~Graphics();
+    explicit Dots(QObject *parent = nullptr, int width = 1280, int height = 720);
+    ~Dots();
 
 signals:
 
@@ -50,4 +50,4 @@ private:
     void Learning();
 };
 
-#endif // GRAPHICS_H
+#endif // DOTS_H
